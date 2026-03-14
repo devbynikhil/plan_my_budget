@@ -1,30 +1,14 @@
 "use client";
-import React, { useEffect } from "react";
-import Image from "next/image";
+import React from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
-import {
-  LayoutGrid,
-  PiggyBank,
-  ReceiptText,
-  ShieldCheck,
-  Bell,
-  Bot,
-} from "lucide-react";
+import { LayoutGrid, PiggyBank, ReceiptText, Bell, Bot } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import ThemeToggle from "@/app/_components/ThemeToggle";
 
 function SideNav() {
-  let user = null;
+  const { user } = useUser();
 
-  try {
-    const userHook = useUser();
-    user = userHook.user;
-  } catch (error) {
-    // Clerk not available (build time or missing keys)
-    console.warn("Clerk not available in SideNav:", error.message);
-  }
-
-  // Check if user is admin
   const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",") || [
     "mailalantest@gmail.com",
   ];
@@ -57,67 +41,71 @@ function SideNav() {
       icon: Bot,
       path: "/dashboard/ai-advisor",
     },
-    {
-      key: 6,
-      name: "Buy me a Coffee",
-      icon: ShieldCheck,
-      path: "/dashboard/upgrade",
-    },
   ];
 
-  // Add Reminders menu item only for admins
   const menuList = isAdmin
     ? [
-        ...baseMenuList.slice(0, 4), // Dashboard, Budgets, Transactions, AI Advisor
+        ...baseMenuList.slice(0, 4),
         {
           key: 5,
           name: "Reminders",
           icon: Bell,
           path: "/dashboard/reminders",
         },
-        ...baseMenuList.slice(4), // Buy me a Coffee
       ]
     : baseMenuList;
 
   const path = usePathname();
 
-  useEffect(() => {
-    // console.log(path); // Removed for cleaner test output
-  }, [path]);
-
   return (
-    <div className="h-screen p-5 border shadow-md">
-      <div className="flex items-center text-primary font-bold">
-        <Image src="/logo.svg" alt="logo" width={100} height={100} />
-        <h1>Plan_My_Budget</h1>
+    <aside className="flex h-screen flex-col border-r border-border/70 bg-card/75 p-4 backdrop-blur">
+      <div className="mb-6 flex items-center justify-between">
+        <Link href="/" className="inline-flex items-center gap-2">
+          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-bold text-primary-foreground">
+            PM
+          </span>
+          <h1 className="text-sm font-semibold">Plan My Budget</h1>
+        </Link>
+        <ThemeToggle />
       </div>
-      <div className="mt-5">
+
+      <nav className="space-y-1">
         {menuList.map((menu) => (
           <Link key={menu.key} href={menu.path}>
-            <h2
-              key={menu.key}
-              className={`flex gap-2 items-center text-gray-500 font-medium mb-2 p-5 cursor-pointer rounded-md 
-                        hover:text-primary hover:bg-rose-100 ${path == menu.path && "text-primary bg-rose-100"}`}
+            <div
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                path === menu.path
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
             >
-              <menu.icon />
+              <menu.icon size={18} />
               {menu.name}
-            </h2>
+            </div>
           </Link>
         ))}
-      </div>
-      <div className="fixed bottom-10 p-5 flex gap-2 items-center">
+      </nav>
+
+      <div className="mt-auto rounded-xl border border-border/60 bg-background/70 p-3">
         {user ? (
-          <>
+          <div className="flex items-center gap-2">
             <UserButton />
-            Profile
-          </>
-        ) : (
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <span className="text-sm">U</span>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-medium">
+                {user.fullName || "Your profile"}
+              </p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                {user.primaryEmailAddress?.emailAddress}
+              </p>
+            </div>
           </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            Sign in to manage your profile.
+          </p>
         )}
       </div>
-    </div>
+    </aside>
   );
 }
 

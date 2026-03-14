@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,11 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import EmojiPicker from 'emoji-picker-react';
-import { Button } from '@/components/ui/button';
+import EmojiPicker from "emoji-picker-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useUser } from '@clerk/nextjs';
-import { toast } from '@/components/ui/use-toast';
+import { useUser } from "@clerk/nextjs";
+import { toast } from "@/components/ui/use-toast";
 
 function CreateBudget({ refreshData }) {
   const [emoji, setEmoji] = useState("😄");
@@ -32,10 +32,10 @@ function CreateBudget({ refreshData }) {
 
     try {
       setLoading(true);
-      const response = await fetch('/api/budgets', {
-        method: 'POST',
+      const response = await fetch("/api/budgets", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name,
@@ -68,7 +68,7 @@ function CreateBudget({ refreshData }) {
         });
       }
     } catch (error) {
-      console.error('Error creating budget:', error);
+      console.error("Error creating budget:", error);
       toast({
         title: "Error",
         description: "Failed to create budget",
@@ -83,18 +83,18 @@ function CreateBudget({ refreshData }) {
     <div>
       <Dialog>
         <DialogTrigger asChild>
-          <div className='bg-slate-100 p-10 rounded-md items-center flex flex-col border-2 border-dashed cursor-pointer hover:shadow-md'>
-            <h2 className='text-3xl'>+</h2>
-            <h2>Create new Budget</h2>
+          <div className="flex min-h-[160px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/35 bg-primary/5 p-8 text-center transition-colors hover:border-primary hover:bg-primary/10">
+            <h2 className="text-3xl font-bold text-primary">+</h2>
+            <h2 className="text-sm font-medium">Create new budget</h2>
           </div>
         </DialogTrigger>
 
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Create new Budget</DialogTitle>
 
             {/* Emoji picker */}
-            <div className='mt-5 relative'>
+            <div className="mt-5 relative">
               <Button
                 className="text-lg"
                 variant="outline"
@@ -103,7 +103,7 @@ function CreateBudget({ refreshData }) {
                 {emoji}
               </Button>
               {openPicker && (
-                <div className='absolute z-20'>
+                <div className="absolute z-20">
                   <EmojiPicker
                     onEmojiClick={(e) => {
                       setEmoji(e.emoji);
@@ -115,8 +115,8 @@ function CreateBudget({ refreshData }) {
             </div>
 
             {/* Budget Name */}
-            <div className='mt-2'>
-              <h2 className='text-black bold'>Budget Name</h2>
+            <div className="mt-2">
+              <h2 className="text-sm font-medium">Budget Name</h2>
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -125,8 +125,8 @@ function CreateBudget({ refreshData }) {
             </div>
 
             {/* Amount */}
-            <div className='mt-2'>
-              <h2 className='text-black bold'>Amount</h2>
+            <div className="mt-2">
+              <h2 className="text-sm font-medium">Amount</h2>
               <Input
                 type="number"
                 value={amount}
@@ -136,8 +136,8 @@ function CreateBudget({ refreshData }) {
             </div>
 
             {/* Category */}
-            <div className='mt-2'>
-              <h2 className='text-black bold'>Category (optional)</h2>
+            <div className="mt-2">
+              <h2 className="text-sm font-medium">Category (optional)</h2>
               <Input
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -153,7 +153,7 @@ function CreateBudget({ refreshData }) {
               <Button
                 onClick={() => onCreateBudget()}
                 disabled={!(name && amount) || loading}
-                className="mt-5"
+                className="mt-3"
               >
                 {loading ? "Creating..." : "Create Budget"}
               </Button>
