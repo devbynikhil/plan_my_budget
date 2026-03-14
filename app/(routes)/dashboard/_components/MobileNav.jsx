@@ -6,7 +6,6 @@ import {
   LayoutGrid,
   PiggyBank,
   ReceiptText,
-  ShieldCheck,
   Bell,
   Bot,
 } from "lucide-react";
@@ -19,13 +18,7 @@ function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const path = usePathname();
 
-  let user = null;
-  try {
-    const userHook = useUser();
-    user = userHook.user;
-  } catch (error) {
-    console.warn("Clerk not available in MobileNav:", error.message);
-  }
+  const { user } = useUser();
 
   // Check if user is admin
   const adminEmails = process.env.NEXT_PUBLIC_ADMIN_EMAILS?.split(",") || [
@@ -60,12 +53,6 @@ function MobileNav() {
       icon: Bot,
       path: "/dashboard/ai-advisor",
     },
-    {
-      key: 6,
-      name: "Buy me a Coffee",
-      icon: ShieldCheck,
-      path: "/dashboard/upgrade",
-    },
   ];
 
   // Add Reminders menu item only for admins
@@ -78,7 +65,6 @@ function MobileNav() {
           icon: Bell,
           path: "/dashboard/reminders",
         },
-        ...baseMenuList.slice(4),
       ]
     : baseMenuList;
 
@@ -109,7 +95,7 @@ function MobileNav() {
       {/* Hamburger Menu Button */}
       <button
         onClick={toggleMenu}
-        className="md:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
+        className="md:hidden rounded-xl border border-border/60 bg-background/80 p-2"
         aria-label="Toggle navigation menu"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -118,38 +104,35 @@ function MobileNav() {
       {/* Mobile Menu Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50"
-            onClick={closeMenu}
-          ></div>
+          <div className="fixed inset-0 bg-black/50" onClick={closeMenu}></div>
 
-          {/* Menu Panel */}
-          <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50">
-            <div className="p-5">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center text-primary font-bold">
-                  <Image src="/logo.svg" alt="logo" width={40} height={40} />
-                  <h1 className="ml-2">Plan_My_Budget</h1>
+          <div className="fixed left-0 top-0 z-50 h-full w-[85%] max-w-xs bg-card p-5 shadow-2xl">
+            <div className="flex h-full flex-col">
+              <div className="mb-5 flex items-center justify-between">
+                <div className="inline-flex items-center gap-2 text-sm font-semibold">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-xs text-primary-foreground">
+                    PM
+                  </span>
+                  Plan My Budget
                 </div>
                 <button
                   onClick={closeMenu}
-                  className="p-1 rounded-md hover:bg-gray-100"
+                  className="rounded-md p-1 hover:bg-secondary"
                   aria-label="Close menu"
                 >
                   <X size={20} />
                 </button>
               </div>
 
-              {/* Navigation Links */}
-              <nav className="space-y-2">
+              <nav className="space-y-1">
                 {menuList.map((menu) => (
                   <Link key={menu.key} href={menu.path} onClick={closeMenu}>
                     <div
-                      className={`flex gap-3 items-center text-gray-500 font-medium p-3 cursor-pointer rounded-md 
-                                            hover:text-primary hover:bg-rose-100 transition-colors duration-200
-                                            ${path === menu.path && "text-primary bg-rose-100"}`}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium ${
+                        path === menu.path
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      }`}
                     >
                       <menu.icon size={20} />
                       {menu.name}
@@ -157,6 +140,10 @@ function MobileNav() {
                   </Link>
                 ))}
               </nav>
+
+              <div className="mt-auto rounded-xl border border-border/60 bg-background/60 p-3 text-xs text-muted-foreground">
+                {user ? user.primaryEmailAddress?.emailAddress : "Guest mode"}
+              </div>
             </div>
           </div>
         </div>

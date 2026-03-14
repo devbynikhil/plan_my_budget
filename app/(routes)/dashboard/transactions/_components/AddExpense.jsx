@@ -1,15 +1,15 @@
 "use client";
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
-import { Loader } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
+import { Loader } from "lucide-react";
 
 function AddExpense({ budgetId, user, refreshData }) {
-  const [name, setName] = useState('');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState('');
-  const [recurring, setRecurring] = useState('none');
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
+  const [recurring, setRecurring] = useState("none");
   const [loading, setLoading] = useState(false);
 
   const addNewTransaction = async () => {
@@ -18,10 +18,10 @@ function AddExpense({ budgetId, user, refreshData }) {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/transactions', {
-        method: 'POST',
+      const response = await fetch("/api/transactions", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name,
@@ -35,10 +35,10 @@ function AddExpense({ budgetId, user, refreshData }) {
       const data = await response.json();
 
       if (response.ok) {
-        setName('');
-        setAmount('');
-        setCategory('');
-        setRecurring('none');
+        setName("");
+        setAmount("");
+        setCategory("");
+        setRecurring("none");
 
         toast({
           title: "Transaction Added",
@@ -64,32 +64,44 @@ function AddExpense({ budgetId, user, refreshData }) {
     }
   };
 
-
   return (
-    <div className='border p-5 rounded-lg'>
-      <h2 className='font-bold text-lg'>Add Transaction</h2>
+    <div className="glass-panel p-5">
+      <h2 className="text-lg font-semibold">Add Transaction</h2>
 
-      <div className='mt-2'>
-        <h2 className='text-black bold'>Transaction Name</h2>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. First Semester" />
+      <div className="mt-2">
+        <h2 className="text-sm font-medium">Transaction Name</h2>
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. First Semester"
+        />
       </div>
 
-      <div className='mt-2'>
-        <h2 className='text-black bold'>Transaction Amount</h2>
-        <Input value={amount} type="number" onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 200000" />
+      <div className="mt-2">
+        <h2 className="text-sm font-medium">Transaction Amount</h2>
+        <Input
+          value={amount}
+          type="number"
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="e.g. 200000"
+        />
       </div>
 
-      <div className='mt-2'>
-        <h2 className='text-black bold'>Category</h2>
-        <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Education, Food, Travel" />
+      <div className="mt-2">
+        <h2 className="text-sm font-medium">Category</h2>
+        <Input
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          placeholder="e.g. Education, Food, Travel"
+        />
       </div>
 
-      <div className='mt-2'>
-        <h2 className='text-black bold'>Recurring</h2>
+      <div className="mt-2">
+        <h2 className="text-sm font-medium">Recurring</h2>
         <select
           value={recurring}
           onChange={(e) => setRecurring(e.target.value)}
-          className="w-full border rounded p-2"
+          className="w-full rounded-md border border-input bg-background p-2 text-sm"
         >
           <option value="none">None</option>
           <option value="daily">Daily</option>
@@ -99,8 +111,12 @@ function AddExpense({ budgetId, user, refreshData }) {
         </select>
       </div>
 
-      <Button onClick={addNewTransaction} disabled={!(name && amount)} className="mt-3 w-full">
-        {loading ? <Loader className='animate-spin' /> : "Add Transaction"}
+      <Button
+        onClick={addNewTransaction}
+        disabled={!(name && amount) || loading}
+        className="mt-4 w-full"
+      >
+        {loading ? <Loader className="animate-spin" /> : "Add Transaction"}
       </Button>
     </div>
   );
