@@ -111,10 +111,6 @@ Visit [http://localhost:3000](http://localhost:3000).
 3. Commit and push your changes
 4. Open a Pull Request
 
-## 📄 License
-
-MIT License. See [LICENSE](LICENSE).
-
 ## 🙏 Acknowledgments
 
 - Next.js, Clerk, Drizzle ORM, Tailwind CSS, Shadcn/ui, Groq, and more.
